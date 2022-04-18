@@ -4,11 +4,18 @@
 <head>
     <meta charset="utf-8">
     <script src="test-runner.js"></script>
-    <meta http-equiv="Content-Security-Policy" content="default-src 'none'">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' 'unsafe-inline'">
+
+    <script src="legitimate-script.js"></script>
+    <script type="text/javascript">
+        window.addEventListener("load", () => {
+            const img = document.createElement('img');
+            img.src = "bad-script.js";
+            document.body.appendChild(img);
+        })
+    </script>
 </head>
 
-<body>
-    <img src="https://sanity.a0c834c72c1b14cc7cfe.d.requestbin.net" alt="" />
-</body>
+<body></body>
 
 </html>
