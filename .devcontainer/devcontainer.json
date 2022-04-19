@@ -1,0 +1,10 @@
+{
+	"name": "Ubuntu",
+	"build": {
+		"dockerfile": "Dockerfile"
+	},
+	"remoteUser": "vscode",
+	"extensions": [
+		"golang.go"
+	]
+}
