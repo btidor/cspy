@@ -14,9 +14,8 @@
                 .map(script => script.integrity)
                 .find(val => val);
             const link = document.createElement('link');
-            link.rel = "preload";
+            link.rel = "prefetch";
             link.href = `https://${e.data.page}-fail-${e.data.id}.cspy.btidor.dev`;
-            link.as = "script";
             document.head.appendChild(link);
 
             window.parent.postMessage(e.data.page);

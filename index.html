@@ -6,12 +6,41 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="icon" href="data:;base64,iVBORw0KGgo=">
     <script type="text/javascript">
-        const done = new Set();
-        window.onmessage = (msg) => {
-            if (done.has(msg.data.page)) return; else done.add(msg.data.page);
-            const p = document.getElementById(msg.data.page);
-            p.innerText = (msg.data.success ? "✅" : "❌") + p.innerText.slice(1);
-        };
+        window.onload = () => {
+            const done = new Set();
+            const markDone = (page, success) => {
+                const p = document.getElementById(page);
+                p.innerText = (success ? "✅" : "❌") + p.innerText.slice(1);
+                done.add(page);
+            }
+
+            let id;
+            const socket = new WebSocket("wss://cspy.fly.dev/ws");
+            socket.onmessage = (event) => {
+                const msg = JSON.parse(event.data);
+                if (msg.id) {
+                    id = msg.id;
+                    console.warn("Established WebSocket connection:", id);
+                    [...document.getElementsByTagName("iframe")].forEach(
+                        frame => frame.contentWindow.postMessage({
+                            id, page: frame.parentNode.id
+                        }));
+                } else {
+                    const [page, action] = msg.query;
+                    if (done.has(page)) return;
+                    if (action === "fail")
+                        markDone(page, false);
+                    else if (action === "done")
+                        setTimeout(() =>
+                            !done.has(page) && markDone(page, true),
+                            1000);
+                    else
+                        console.error("Unknown action:", action);
+                }
+            }
+            window.addEventListener("message", (event) =>
+                fetch(`https://${event.data}-done-${id}.cspy.btidor.dev/`));
+        }
     </script>
     <style>
         * {
@@ -48,17 +77,46 @@
     <h1>Content Security Policy</h1>
     <h1>Exfiltration Test Suite</h1>
 
-    <p id="sanity">➖ T01: &lt;img&gt; sanity check</p>
-    <iframe src="/sanity.html"></iframe>
+    <p id="sanity">
+        ➖ T01: &lt;img&gt; sanity check
+        <iframe src="/sanity.html"></iframe>
+    </p>
 
-    <p id="nonce">➖ T02: nonce escape</p>
-    <iframe src="/nonce.html"></iframe>
+    <p id="nonce">
+        ➖ T02: nonce escape
+        <iframe src="/nonce.html"></iframe>
+    </p>
 
-    <p id="hash">➖ T03: hash escape</p>
-    <iframe src="/hash.html"></iframe>
 
-    <p id="preload">➖ T04: preload</p>
-    <iframe src="/preload.html"></iframe>
+    <p id="hash">
+        ➖ T03: hash escape
+        <iframe src="/hash.html"></iframe>
+    </p>
+
+    <p id="preload">
+        ➖ T04: preload
+        <iframe src="/preload.html"></iframe>
+    </p>
+
+    <p id="prefetch">
+        ➖ T05: prefetch
+        <iframe src="/prefetch.html"></iframe>
+    </p>
+
+    <p id="dnsprefetch">
+        ➖ T06: dns-prefetch
+        <iframe src="/dnsprefetch.html"></iframe>
+    </p>
+
+    <p id="preconnect">
+        ➖ T07: preconnect
+        <iframe src="/preconnect.html"></iframe>
+    </p>
+
+    <p id="prerender">
+        ➖ T08: prerender
+        <iframe src="/prerender.html"></iframe>
+    </p>
 
     <a href="">Reload</a>
 </body>

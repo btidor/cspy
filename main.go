@@ -33,12 +33,12 @@ func main() {
 		prefix := strings.TrimSuffix(name, suffix)
 		parts := strings.Split(prefix, "-")
 
-		if len(parts) == 2 {
+		if len(parts) > 1 {
 			go func() {
 				mutex.Lock()
 				defer mutex.Unlock()
-				if conn, ok := clients[parts[1]]; ok {
-					conn.WriteJSON(map[string]string{"query": parts[0]})
+				if conn, ok := clients[parts[len(parts)-1]]; ok {
+					conn.WriteJSON(map[string][]string{"query": parts})
 				}
 			}()
 		}
@@ -67,7 +67,13 @@ func main() {
 		panic(err)
 	}()
 
-	upgrader := websocket.Upgrader{}
+	upgrader := websocket.Upgrader{
+		HandshakeTimeout: timeout,
+		CheckOrigin: func(r *http.Request) bool {
+			// Open to all origins
+			return true
+		},
+	}
 	http.HandleFunc("/ws", func(w http.ResponseWriter, r *http.Request) {
 		conn, err := upgrader.Upgrade(w, r, nil)
 		if err != nil {

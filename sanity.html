@@ -3,16 +3,20 @@
 
 <head>
     <meta charset="utf-8">
-    <script src="test-runner.js"></script>
-    <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' 'unsafe-inline'">
+    <meta http-equiv="Content-Security-Policy"
+        content="default-src 'none'; script-src 'self' 'unsafe-inline'; navigate-to 'none'">
 
     <script src="legitimate-script.js"></script>
     <script type="text/javascript">
-        window.addEventListener("load", () => {
+        window.addEventListener("message", (e) => {
+            console.warn("Running test:", e.data);
+
             const img = document.createElement('img');
-            img.src = "bad-script.js";
+            img.src = `https://${e.data.page}-fail-${e.data.id}.cspy.btidor.dev`;
             document.body.appendChild(img);
-        })
+
+            window.parent.postMessage(e.data.page);
+        });
     </script>
 </head>
 

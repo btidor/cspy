@@ -3,18 +3,24 @@
 
 <head>
     <meta charset="utf-8">
-    <script src="test-runner.js"></script>
-    <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'nonce-s33kr1t'">
+    <meta http-equiv="Content-Security-Policy"
+        content="default-src 'none'; script-src 'nonce-s33kr1t'; navigate-to 'none'">
 
     <script src="legitimate-script.js" nonce="s33kr1t"></script>
     <script type="text/javascript" nonce="s33kr1t">
-        const nonce = [...document.getElementsByTagName('script')]
-            .map(script => script.nonce)
-            .find(val => val);
-        const script = document.createElement('script');
-        script.src = "bad-script.js"
-        script.nonce = nonce;
-        document.head.appendChild(script);
+        window.addEventListener("message", (e) => {
+            console.warn("Running test:", e.data);
+
+            const nonce = [...document.getElementsByTagName('script')]
+                .map(script => script.nonce)
+                .find(val => val);
+            const script = document.createElement('script');
+            script.src = `https://${e.data.page}-fail-${e.data.id}.cspy.btidor.dev`
+            script.nonce = nonce;
+            document.head.appendChild(script);
+
+            window.parent.postMessage(e.data.page);
+        });
     </script>
 </head>
 
