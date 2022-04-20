@@ -59,7 +59,7 @@
 
         p:first-of-type,
         a {
-            display: inline-block;
+            display: block;
             margin-top: 1em;
         }
 
@@ -116,6 +116,21 @@
     <p id="prerender">
         ➖ T08: prerender
         <iframe src="/prerender.html"></iframe>
+    </p>
+
+    <p id="stun">
+        ➖ T09: webrtc via stun candidates
+        <iframe src="/stun.html"></iframe>
+    </p>
+
+    <p id="peerdns">
+        ➖ T10: webrtc via peer dns
+        <iframe src="/peerdns.html"></iframe>
+    </p>
+
+    <p id="datachannel">
+        ➖ T11: webrtc via data channel
+        <iframe src="/datachannel.html"></iframe>
     </p>
 
     <a href="">Reload</a>

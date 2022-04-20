@@ -1,1 +1,1 @@
-window.cspxLegitimateScriptWasHere = true;
+window.legitimateScriptWasHere = true;

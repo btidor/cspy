@@ -48,3 +48,10 @@ processes = []
 
   [[services.ports]]
     port = "53"
+
+[[services]]
+  internal_port = 1234
+  protocol = "udp"
+
+  [[services.ports]]
+    port = "1234"

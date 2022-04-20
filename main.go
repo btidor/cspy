@@ -24,24 +24,25 @@ const idchars = "abcdefghijklmnopqrstuvwxyz0123456789"
 var clients = make(map[string]*websocket.Conn)
 var mutex = sync.Mutex{}
 
+func handlePing(slug string) {
+	parts := strings.Split(strings.TrimSpace(slug), "-")
+	if len(parts) > 1 {
+		mutex.Lock()
+		defer mutex.Unlock()
+		if conn, ok := clients[parts[len(parts)-1]]; ok {
+			conn.WriteJSON(map[string][]string{"query": parts})
+		}
+	}
+}
+
 func main() {
 	dns.HandleFunc(domain, func(w dns.ResponseWriter, r *dns.Msg) {
 		m := new(dns.Msg)
 		m.SetReply(r)
 
 		name := r.Question[0].Name
-		prefix := strings.TrimSuffix(name, suffix)
-		parts := strings.Split(prefix, "-")
-
-		if len(parts) > 1 {
-			go func() {
-				mutex.Lock()
-				defer mutex.Unlock()
-				if conn, ok := clients[parts[len(parts)-1]]; ok {
-					conn.WriteJSON(map[string][]string{"query": parts})
-				}
-			}()
-		}
+		slug := strings.TrimSuffix(name, suffix)
+		handlePing(slug)
 
 		a := new(dns.A)
 		a.Hdr = dns.RR_Header{Name: name, Rrtype: dns.TypeA, Class: dns.ClassINET, Ttl: 60}
@@ -65,6 +66,21 @@ func main() {
 		server := &dns.Server{Addr: ":5353", Net: "tcp"}
 		err := server.ListenAndServe()
 		panic(err)
+	}()
+
+	go func() {
+		socket, err := net.ListenPacket("udp", "fly-global-services:1234")
+		if err != nil {
+			panic(err)
+		}
+		buf := make([]byte, 1024)
+		for {
+			n, _, err := socket.ReadFrom(buf)
+			if err != nil {
+				panic(err)
+			}
+			log.Printf("1234 %x\n", buf[:n])
+		}
 	}()
 
 	upgrader := websocket.Upgrader{
