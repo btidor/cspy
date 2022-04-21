@@ -55,3 +55,7 @@ processes = []
 
   [[services.ports]]
     port = "1234"
+
+[[statics]]
+  guest_path = "/var/static"
+  url_prefix = "/"
