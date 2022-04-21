@@ -25,7 +25,7 @@
                         frame => frame.contentWindow.postMessage({
                             id, page: frame.parentNode.id
                         }));
-                } else {
+                } else if (msg.query) {
                     const [page, action] = msg.query;
                     if (done.has(page)) return;
                     if (action === "fail")
@@ -36,6 +36,10 @@
                             1000);
                     else
                         console.error("Unknown action:", action);
+                } else if (msg.webrtc) {
+                    markDone("peeruser", false);
+                } else {
+                    console.error("Unknown message:", message);
                 }
             }
             window.addEventListener("message", (event) =>
@@ -118,19 +122,19 @@
         <iframe src="/prerender.html"></iframe>
     </p>
 
-    <p id="stun">
-        ➖ T09: webrtc via stun candidates
-        <iframe src="/stun.html"></iframe>
+    <p id="stunhost">
+        ➖ T09: webrtc via stun hostname
+        <iframe src="/stunhost.html"></iframe>
     </p>
 
-    <p id="peerdns">
-        ➖ T10: webrtc via peer dns
-        <iframe src="/peerdns.html"></iframe>
+    <p id="peerhost">
+        ➖ T10: webrtc via peer hostname
+        <iframe src="/peerhost.html"></iframe>
     </p>
 
-    <p id="datachannel">
-        ➖ T11: webrtc via data channel
-        <iframe src="/datachannel.html"></iframe>
+    <p id="peeruser">
+        ➖ T11: webrtc via stun username
+        <iframe src="/peeruser.html"></iframe>
     </p>
 
     <a href="">Reload</a>

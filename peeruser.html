@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="Content-Security-Policy"
+        content="default-src 'none'; script-src 'nonce-s33kr1t'; navigate-to 'none'; webrtc 'none'">
+
+    <script type="text/javascript" nonce="s33kr1t">
+        window.addEventListener("message", (e) => {
+            console.warn("Running test:", e.data);
+
+            (async () => {
+                const conn1 = new RTCPeerConnection();
+                const data = conn1.createDataChannel("label");
+                const offer = await conn1.createOffer();
+                await conn1.setLocalDescription(offer);
+
+                const answer = new RTCSessionDescription({
+                    type: "answer",
+                    sdp: [
+                        "v=0",
+                        "o=- 8041995815144521202 0 IN IP4 127.0.0.1",
+                        "s=-",
+                        "t=0 0",
+                        "a=group:BUNDLE 0",
+                        "a=extmap-allow-mixed",
+                        "a=msid-semantic: WMS",
+                        "m=application 9 UDP/DTLS/SCTP webrtc-datachannel",
+                        "c=IN IP4 0.0.0.0",
+                        `a=ice-ufrag:${e.data.id}`,
+                        "a=ice-pwd:ezsPqCT4D3K19hijqX3O0FAR",
+                        "a=ice-options:trickle",
+                        "a=fingerprint:sha-256 00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:0F",
+                        "a=setup:active",
+                        "a=mid:0",
+                        "a=sctp-port:5000",
+                        "a=max-message-size:262144",
+                        "",
+                    ].join("\r\n"),
+                })
+                await conn1.setRemoteDescription(answer);
+
+                await conn1.addIceCandidate(new RTCIceCandidate({
+                    candidate: [
+                        "candidate:0 1 UDP 9999999",
+                        "37.16.6.18 1234",
+                        "typ host",
+                    ].join(" "),
+                    sdpMid: "0",
+                    sdpMLineIndex: 0,
+                    usernameFragment: e.data.id,
+                }));
+
+                window.parent.postMessage(e.data.page);
+            })();
+        });
+    </script>
+</head>
+
+<body></body>
+
+</html>
