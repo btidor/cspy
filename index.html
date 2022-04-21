@@ -61,16 +61,6 @@
             margin: 3ch;
         }
 
-        p:first-of-type,
-        a {
-            display: block;
-            margin-top: 1em;
-        }
-
-        a {
-            user-select: none;
-        }
-
         iframe {
             display: none;
         }
@@ -81,63 +71,73 @@
     <h1>Content Security Policy</h1>
     <h1>Exfiltration Test Suite</h1>
 
+    <br />
+
     <p id="sanity">
-        ➖ T01: &lt;img&gt; sanity check
+        ➖ X1: &lt;img&gt; sanity check
         <iframe src="/sanity.html"></iframe>
     </p>
 
+    <br />
+
     <p id="nonce">
-        ➖ T02: nonce escape
+        ➖ T1: &lt;script&gt; nonce
         <iframe src="/nonce.html"></iframe>
     </p>
 
+    <p id="noncemeta">
+        ➖ T2: &lt;meta&gt; nonce
+        <iframe src="/noncemeta.html"></iframe>
+    </p>
 
     <p id="hash">
-        ➖ T03: hash escape
+        ➖ T3: &lt;script&gt; hash
         <iframe src="/hash.html"></iframe>
     </p>
 
+    <br />
+
     <p id="preload">
-        ➖ T04: preload
+        ➖ P1: &lt;link rel&quot;preload&quot;&gt;
         <iframe src="/preload.html"></iframe>
     </p>
 
     <p id="prefetch">
-        ➖ T05: prefetch
+        ➖ P2: &lt;link rel&quot;prefetch&quot;&gt;
         <iframe src="/prefetch.html"></iframe>
     </p>
 
     <p id="dnsprefetch">
-        ➖ T06: dns-prefetch
+        ➖ P3: &lt;link rel&quot;dns-prefetch&quot;&gt;
         <iframe src="/dnsprefetch.html"></iframe>
     </p>
 
     <p id="preconnect">
-        ➖ T07: preconnect
+        ➖ P4: &lt;link rel&quot;preconnect&quot;&gt;
         <iframe src="/preconnect.html"></iframe>
     </p>
 
     <p id="prerender">
-        ➖ T08: prerender
+        ➖ P5: &lt;link rel&quot;prerender&quot;&gt;
         <iframe src="/prerender.html"></iframe>
     </p>
 
+    <br />
+
     <p id="stunhost">
-        ➖ T09: webrtc via stun hostname
+        ➖ W1: WebRTC, STUN server hostname
         <iframe src="/stunhost.html"></iframe>
     </p>
 
     <p id="peerhost">
-        ➖ T10: webrtc via peer hostname
+        ➖ W2: WebRTC, candidate hostname
         <iframe src="/peerhost.html"></iframe>
     </p>
 
     <p id="peeruser">
-        ➖ T11: webrtc via stun username
+        ➖ W3: WebRTC, candidate username
         <iframe src="/peeruser.html"></iframe>
     </p>
-
-    <a href="">Reload</a>
 </body>
 
 </html>
