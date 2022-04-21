@@ -36,10 +36,12 @@
                             1000);
                     else
                         console.error("Unknown action:", action);
-                } else if (msg.webrtc) {
+                } else if (msg.rtcuser) {
                     markDone("peeruser", false);
+                } else if (msg.rtcdata) {
+                    markDone("peerdata", false);
                 } else {
-                    console.error("Unknown message:", message);
+                    console.error("Unknown message:", msg);
                 }
             }
             window.addEventListener("message", (event) =>
@@ -137,6 +139,11 @@
     <p id="peeruser">
         ➖ W3: WebRTC, candidate username
         <iframe src="/peeruser.html"></iframe>
+    </p>
+
+    <p id="peerdata">
+        ➖ W4: WebRTC, data channel
+        <iframe src="/peerdata.html"></iframe>
     </p>
 </body>
 

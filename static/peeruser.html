@@ -11,10 +11,10 @@
             console.warn("Running test:", e.data);
 
             (async () => {
-                const conn1 = new RTCPeerConnection();
-                const data = conn1.createDataChannel("label");
-                const offer = await conn1.createOffer();
-                await conn1.setLocalDescription(offer);
+                const conn = new RTCPeerConnection();
+                const data = conn.createDataChannel("label");
+                const offer = await conn.createOffer();
+                await conn.setLocalDescription(offer);
 
                 const answer = new RTCSessionDescription({
                     type: "answer",
@@ -28,7 +28,7 @@
                         "a=msid-semantic: WMS",
                         "m=application 9 UDP/DTLS/SCTP webrtc-datachannel",
                         "c=IN IP4 0.0.0.0",
-                        `a=ice-ufrag:${e.data.id}`,
+                        `a=ice-ufrag:CSPY-${e.data.id}`,
                         "a=ice-pwd:ezsPqCT4D3K19hijqX3O0FAR",
                         "a=ice-options:trickle",
                         "a=fingerprint:sha-256 00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:0F",
@@ -39,9 +39,9 @@
                         "",
                     ].join("\r\n"),
                 })
-                await conn1.setRemoteDescription(answer);
+                await conn.setRemoteDescription(answer);
 
-                await conn1.addIceCandidate(new RTCIceCandidate({
+                await conn.addIceCandidate(new RTCIceCandidate({
                     candidate: [
                         "candidate:0 1 UDP 9999999",
                         "37.16.6.18 1234",

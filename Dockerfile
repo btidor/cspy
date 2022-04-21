@@ -6,6 +6,7 @@ RUN CGO_ENABLED=0 go build -ldflags="-w -s" -buildvcs=false .
 
 FROM scratch
 COPY --from=build /build/cspy /bin/cspy
+COPY --from=build /build/*.pem /var/
 COPY --from=build /build/static /var/static
 
 USER root
