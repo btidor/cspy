@@ -19,7 +19,7 @@
             link.as = "script";
             document.head.appendChild(link);
 
-            window.parent.postMessage(e.data.page);
+            window.parent.postMessage(e.data.page, "*");
         });
     </script>
 </head>

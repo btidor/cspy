@@ -19,7 +19,7 @@
             script.nonce = nonce;
             document.head.appendChild(script);
 
-            window.parent.postMessage(e.data.page);
+            window.parent.postMessage(e.data.page, "*");
         });
     </script>
 </head>

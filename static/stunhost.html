@@ -20,7 +20,7 @@
                 const offer = await conn.createOffer();
                 await conn.setLocalDescription(offer);
 
-                window.parent.postMessage(e.data.page);
+                window.parent.postMessage(e.data.page, "*");
             })();
         });
     </script>

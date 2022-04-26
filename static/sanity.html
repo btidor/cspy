@@ -14,7 +14,7 @@
             img.src = `https://${e.data.page}-fail-${e.data.id}.cspy.btidor.dev`;
             document.body.appendChild(img);
 
-            window.parent.postMessage(e.data.page);
+            window.parent.postMessage(e.data.page, "*");
         });
     </script>
 </head>
