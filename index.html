@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="icon" href="data:;base64,iVBORw0KGgo=">
+    <script type="text/javascript">
+        window.onload = () => {
+            const done = new Set();
+            const markDone = (page, success) => {
+                const p = document.getElementById(page);
+                p.innerText = (success ? "✅" : "❌") + p.innerText.slice(1);
+                done.add(page);
+            }
+
+            let id;
+            const socket = new WebSocket("wss://cspy.fly.dev/ws");
+            socket.onmessage = (event) => {
+                const msg = JSON.parse(event.data);
+                if (msg.id) {
+                    id = msg.id;
+                    console.warn("Established WebSocket connection:", id);
+                    [...document.getElementsByTagName("iframe")].forEach(
+                        frame => frame.contentWindow.postMessage({
+                            id, page: frame.parentNode.id
+                        }));
+                } else if (msg.query) {
+                    const [page, action] = msg.query;
+                    if (done.has(page)) return;
+                    if (action === "fail")
+                        markDone(page, false);
+                    else if (action === "done")
+                        setTimeout(() =>
+                            !done.has(page) && markDone(page, true),
+                            1000);
+                    else
+                        console.error("Unknown action:", action);
+                } else if (msg.rtcuser) {
+                    markDone("peeruser", false);
+                } else if (msg.rtcdata) {
+                    markDone("peerdata", false);
+                } else {
+                    console.error("Unknown message:", msg);
+                }
+            }
+            window.addEventListener("message", (event) =>
+                fetch(`https://${event.data}-done-${id}.cspy.btidor.dev/`));
+        }
+    </script>
+    <style>
+        * {
+            box-sizing: inherit;
+            font-size: medium;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            box-sizing: border-box;
+            font-family: monospace;
+            line-height: 1.4;
+            margin: 3ch;
+        }
+
+        iframe {
+            display: none;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>Content Security Policy</h1>
+    <h1>Exfiltration Test Suite</h1>
+
+    <br />
+
+    <p id="sanity">
+        ➖ X1: &lt;img&gt; sanity check
+        <iframe src="/static/sanity.html"></iframe>
+    </p>
+
+    <br />
+
+    <p id="nonce">
+        ➖ T1: &lt;script&gt; nonce
+        <iframe src="/static/nonce.html"></iframe>
+    </p>
+
+    <p id="noncemeta">
+        ➖ T2: &lt;meta&gt; nonce
+        <iframe src="/static/noncemeta.html"></iframe>
+    </p>
+
+    <p id="hash">
+        ➖ T3: &lt;script&gt; hash
+        <iframe src="/static/hash.html"></iframe>
+    </p>
+
+    <br />
+
+    <p id="preload">
+        ➖ P1: &lt;link rel&quot;preload&quot;&gt;
+        <iframe src="/static/preload.html"></iframe>
+    </p>
+
+    <p id="prefetch">
+        ➖ P2: &lt;link rel&quot;prefetch&quot;&gt;
+        <iframe src="/static/prefetch.html"></iframe>
+    </p>
+
+    <p id="dnsprefetch">
+        ➖ P3: &lt;link rel&quot;dns-prefetch&quot;&gt;
+        <iframe src="/static/dnsprefetch.html"></iframe>
+    </p>
+
+    <p id="preconnect">
+        ➖ P4: &lt;link rel&quot;preconnect&quot;&gt;
+        <iframe src="/static/preconnect.html"></iframe>
+    </p>
+
+    <p id="prerender">
+        ➖ P5: &lt;link rel&quot;prerender&quot;&gt;
+        <iframe src="/static/prerender.html"></iframe>
+    </p>
+
+    <br />
+
+    <p id="stunhost">
+        ➖ W1: WebRTC, STUN server hostname
+        <iframe src="/static/stunhost.html"></iframe>
+    </p>
+
+    <p id="peerhost">
+        ➖ W2: WebRTC, candidate hostname
+        <iframe src="/static/peerhost.html"></iframe>
+    </p>
+
+    <p id="peeruser">
+        ➖ W3: WebRTC, candidate username
+        <iframe src="/static/peeruser.html"></iframe>
+    </p>
+
+    <p id="peerdata">
+        ➖ W4: WebRTC, data channel
+        <iframe src="/static/peerdata.html"></iframe>
+    </p>
+</body>
+
+</html>
