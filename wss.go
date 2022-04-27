@@ -18,6 +18,9 @@ var upgrader = websocket.Upgrader{
 }
 
 func StartWSS() {
+	http.Handle("/", http.RedirectHandler(
+		"https://btidor.dev/content-security-policy", 307,
+	))
 	http.HandleFunc("/ws", WSSHandler)
 	go func() {
 		server := &http.Server{Addr: ":80"}
