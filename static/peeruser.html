@@ -49,7 +49,7 @@
                     ].join(" "),
                     sdpMid: "0",
                     sdpMLineIndex: 0,
-                    usernameFragment: e.data.id,
+                    usernameFragment: `CSPY-${e.data.id}`,
                 }));
 
                 window.parent.postMessage(e.data.page, "*");
